@@ -74,7 +74,7 @@ def parse_message(text):
 # ──────────────────────────────────────────
 @app.route("/webhook", methods=["POST"])
 @app.route("/webhook/<path:token>", methods=["POST"])
-def webhook():
+def webhook(**kwargs):
     data = request.get_json(silent=True)
     if not data:
         return jsonify({"ok": True})
