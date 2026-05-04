@@ -72,7 +72,8 @@ def parse_message(text):
 # ──────────────────────────────────────────
 # Webhook endpoint
 # ──────────────────────────────────────────
-@app.route(f"/webhook/{TELEGRAM_TOKEN}", methods=["POST"])
+@app.route("/webhook", methods=["POST"])
+@app.route("/webhook/<path:token>", methods=["POST"])
 def webhook():
     data = request.get_json(silent=True)
     if not data:
