@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>الحركة اليومية — Audio Technology</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --bg: #0d1117;
+  --bg2: #161b22;
+  --bg3: #21262d;
+  --border: #30363d;
+  --accent: #f0a500;
+  --accent2: #e08c00;
+  --text: #e6edf3;
+  --text2: #8b949e;
+  --text3: #6e7681;
+  --green: #3fb950;
+  --red: #f85149;
+  --blue: #58a6ff;
+  --radius: 10px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Cairo', sans-serif;
+  min-height: 100vh;
+}
+
+/* HEADER */
+.header {
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+  padding: 0 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 64px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.logo-icon {
+  width: 36px; height: 36px;
+  background: var(--accent);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+}
+.logo-icon svg { width: 20px; height: 20px; color: #000; }
+.logo-text { font-size: 17px; font-weight: 700; color: var(--text); letter-spacing: -0.3px; }
+.logo-sub { font-size: 11px; color: var(--text2); font-weight: 400; }
+
+.header-right { display: flex; align-items: center; gap: 12px; }
+.status-pill {
+  display: flex; align-items: center; gap: 6px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 5px 12px;
+  font-size: 12px;
+  color: var(--text2);
+}
+.status-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--text3);
+}
+.status-dot.live { background: var(--green); box-shadow: 0 0 6px var(--green); animation: blink 2s infinite; }
+.status-dot.err { background: var(--red); }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+.refresh-btn {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 7px 14px;
+  color: var(--text2);
+  font-size: 12px;
+  font-family: 'Cairo', sans-serif;
+  cursor: pointer;
+  display: flex; align-items: center; gap: 6px;
+  transition: all 0.15s;
+}
+.refresh-btn:hover { border-color: var(--accent); color: var(--accent); }
+.refresh-btn svg { width: 14px; height: 14px; }
+
+/* STATS BAR */
+.stats-bar {
+  display: flex;
+  gap: 1px;
+  background: var(--border);
+  border-bottom: 1px solid var(--border);
+}
+.stat {
+  flex: 1;
+  background: var(--bg2);
+  padding: 14px 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.stat-icon {
+  width: 34px; height: 34px;
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.stat-icon.yellow { background: rgba(240,165,0,0.12); color: var(--accent); }
+.stat-icon.green { background: rgba(63,185,80,0.12); color: var(--green); }
+.stat-icon.blue { background: rgba(88,166,255,0.12); color: var(--blue); }
+.stat-icon svg { width: 16px; height: 16px; }
+.stat-info { display: flex; flex-direction: column; gap: 2px; }
+.stat-val { font-size: 20px; font-weight: 700; color: var(--text); line-height: 1; }
+.stat-lbl { font-size: 11px; color: var(--text2); }
+
+/* FILTERS */
+.filters-bar {
+  padding: 1rem 2rem;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+.filter-group { display: flex; align-items: center; gap: 8px; }
+.filter-label { font-size: 12px; color: var(--text2); white-space: nowrap; }
+.filter-select {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 7px 12px;
+  color: var(--text);
+  font-size: 13px;
+  font-family: 'Cairo', sans-serif;
+  cursor: pointer;
+  outline: none;
+  min-width: 150px;
+  transition: border-color 0.15s;
+}
+.filter-select:focus { border-color: var(--accent); }
+.filter-input {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 7px 12px;
+  color: var(--text);
+  font-size: 13px;
+  font-family: 'Cairo', sans-serif;
+  outline: none;
+  width: 130px;
+  transition: border-color 0.15s;
+}
+.filter-input:focus { border-color: var(--accent); }
+.filter-input::placeholder { color: var(--text3); }
+.clear-btn {
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 7px 12px;
+  color: var(--text2);
+  font-size: 12px;
+  font-family: 'Cairo', sans-serif;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.clear-btn:hover { border-color: var(--red); color: var(--red); }
+.filter-count {
+  margin-right: auto;
+  font-size: 12px;
+  color: var(--text2);
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 4px 10px;
+}
+
+/* TABLE */
+.table-wrap {
+  padding: 1.5rem 2rem;
+  overflow-x: auto;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+thead tr {
+  background: var(--bg2);
+  border-bottom: 2px solid var(--accent);
+}
+thead th {
+  padding: 12px 16px;
+  text-align: right;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text2);
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+thead th:first-child { border-radius: 0 8px 0 0; }
+thead th:last-child { border-radius: 8px 0 0 0; }
+
+tbody tr {
+  border-bottom: 1px solid var(--border);
+  transition: background 0.1s;
+}
+tbody tr:hover { background: var(--bg2); }
+tbody td {
+  padding: 13px 16px;
+  color: var(--text);
+  vertical-align: middle;
+}
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+}
+.badge-day {
+  background: rgba(240,165,0,0.12);
+  color: var(--accent);
+  border: 1px solid rgba(240,165,0,0.25);
+}
+.badge-team {
+  background: rgba(88,166,255,0.1);
+  color: var(--blue);
+  border: 1px solid rgba(88,166,255,0.2);
+}
+.count-badge {
+  background: rgba(63,185,80,0.12);
+  color: var(--green);
+  border: 1px solid rgba(63,185,80,0.2);
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 13px;
+}
+.engineer-cell { color: var(--text2); font-size: 13px; }
+.date-cell { color: var(--text2); font-size: 13px; font-family: monospace; }
+.project-cell { font-weight: 600; color: var(--text); }
+
+/* EMPTY */
+.empty-state {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: var(--text2);
+}
+.empty-icon {
+  width: 56px; height: 56px;
+  margin: 0 auto 1rem;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  display: flex; align-items: center; justify-content: center;
+}
+.empty-icon svg { width: 26px; height: 26px; color: var(--text3); }
+.empty-title { font-size: 16px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+.empty-sub { font-size: 13px; color: var(--text3); }
+
+/* FORMAT GUIDE */
+.format-card {
+  margin: 0 2rem 1.5rem;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-right: 3px solid var(--accent);
+  border-radius: var(--radius);
+  padding: 1rem 1.25rem;
+}
+.format-title { font-size: 12px; font-weight: 600; color: var(--accent); margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+.format-code {
+  font-family: 'Courier New', monospace;
+  font-size: 12px;
+  color: var(--text2);
+  line-height: 1.8;
+  background: var(--bg);
+  border-radius: 6px;
+  padding: 10px 12px;
+}
+.format-code span { color: var(--green); }
+
+/* LAST UPDATE */
+.last-update {
+  padding: 0.5rem 2rem 1rem;
+  font-size: 11px;
+  color: var(--text3);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+@media (max-width: 768px) {
+  .header { padding: 0 1rem; }
+  .stats-bar { flex-wrap: wrap; }
+  .stat { min-width: 50%; }
+  .filters-bar { padding: 0.75rem 1rem; }
+  .table-wrap { padding: 1rem; }
+  .format-card { margin: 0 1rem 1rem; }
+}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="logo">
+    <div class="logo-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+    </div>
+    <div>
+      <div class="logo-text">الحركة اليومية</div>
+      <div class="logo-sub">Audio Technology — AV Operations</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <div class="status-pill">
+      <div class="status-dot" id="statusDot"></div>
+      <span id="statusTxt">جاري التحميل...</span>
+    </div>
+    <button class="refresh-btn" onclick="fetchNow()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+      تحديث
+    </button>
+  </div>
+</header>
+
+<div class="stats-bar">
+  <div class="stat">
+    <div class="stat-icon yellow">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+    </div>
+    <div class="stat-info">
+      <div class="stat-val" id="statToday">—</div>
+      <div class="stat-lbl">سجلات اليوم</div>
+    </div>
+  </div>
+  <div class="stat">
+    <div class="stat-icon green">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+    </div>
+    <div class="stat-info">
+      <div class="stat-val" id="statPersonnel">—</div>
+      <div class="stat-lbl">إجمالي الأفراد</div>
+    </div>
+  </div>
+  <div class="stat">
+    <div class="stat-icon blue">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+    </div>
+    <div class="stat-info">
+      <div class="stat-val" id="statProjects">—</div>
+      <div class="stat-lbl">مشاريع نشطة</div>
+    </div>
+  </div>
+  <div class="stat">
+    <div class="stat-icon yellow">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+    </div>
+    <div class="stat-info">
+      <div class="stat-val" id="statTotal">—</div>
+      <div class="stat-lbl">إجمالي السجلات</div>
+    </div>
+  </div>
+</div>
+
+<div class="filters-bar">
+  <div class="filter-group">
+    <span class="filter-label">التاريخ:</span>
+    <input type="date" class="filter-input" id="filterDate" style="width:160px"/>
+  </div>
+  <div class="filter-group">
+    <span class="filter-label">المجموعة:</span>
+    <select class="filter-select" id="filterTeam">
+      <option value="">— كل المجموعات —</option>
+    </select>
+  </div>
+  <div class="filter-group">
+    <span class="filter-label">المشروع:</span>
+    <select class="filter-select" id="filterProject">
+      <option value="">— كل المشاريع —</option>
+    </select>
+  </div>
+  <button class="clear-btn" onclick="clearFilters()">مسح الفلاتر</button>
+  <div class="filter-count" id="filterCount">0 سجل</div>
+</div>
+
+<div class="format-card">
+  <div class="format-title">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+    صيغة الرسالة المطلوبة على Telegram
+  </div>
+  <div class="format-code">
+    <span>اليوم:</span> الثلاثاء&nbsp;&nbsp;&nbsp;<span>التاريخ:</span> 4/5/2026&nbsp;&nbsp;&nbsp;<span>المجموعة:</span> نصيف فيكتور&nbsp;&nbsp;&nbsp;<span>المشروع:</span> Fifth Square&nbsp;&nbsp;&nbsp;<span>عدد الأفراد:</span> 4&nbsp;&nbsp;&nbsp;<span>مهندس الموقع:</span> أحمد عاطف
+  </div>
+</div>
+
+<div class="table-wrap">
+  <table id="mainTable">
+    <thead>
+      <tr>
+        <th>اليوم</th>
+        <th>التاريخ</th>
+        <th>المجموعة</th>
+        <th>المشروع</th>
+        <th>عدد الأفراد</th>
+        <th>مهندس الموقع</th>
+      </tr>
+    </thead>
+    <tbody id="tableBody">
+      <tr><td colspan="6">
+        <div class="empty-state">
+          <div class="empty-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
+          <div class="empty-title">جاري تحميل البيانات...</div>
+          <div class="empty-sub">يتم سحب الرسائل من Telegram</div>
+        </div>
+      </td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="last-update">
+  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+  <span id="lastUpdate">لم يتم التحديث بعد</span>
+  <span style="margin-right: auto; color: var(--text3)">تحديث تلقائي كل 30 ثانية</span>
+</div>
+
+<!-- Firebase SDK -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDVBldy-tUH1Q-yhizfwCbI8Pd7N1H4MK4",
+  authDomain: "daily-haraka.firebaseapp.com",
+  projectId: "daily-haraka",
+  storageBucket: "daily-haraka.firebasestorage.app",
+  messagingSenderId: "885776283709",
+  appId: "1:885776283709:web:481978c1fcf2cec746d254"
+};
+
+const fireApp = initializeApp(firebaseConfig);
+const db = getFirestore(fireApp);
+
+let allRecords = [];
+
+function setStatus(state, txt) {
+  const dot = document.getElementById('statusDot');
+  dot.className = 'status-dot ' + (state === 'ok' ? 'live' : state === 'err' ? 'err' : '');
+  document.getElementById('statusTxt').textContent = txt;
+}
+
+function normalizeDate(d) {
+  if (!d || d === '—') return '';
+  const parts = d.split(/[\/\-\.]/);
+  if (parts.length === 3) {
+    let [a, b, c] = parts;
+    if (c && c.length === 4) return `${c}-${b.padStart(2,'0')}-${a.padStart(2,'0')}`;
+    if (a && a.length === 4) return `${a}-${b.padStart(2,'0')}-${c.padStart(2,'0')}`;
+  }
+  return d;
+}
+
+function updateFilters() {
+  const teams    = [...new Set(allRecords.map(r => r['المجموعة']).filter(v => v && v !== '—'))].sort();
+  const projects = [...new Set(allRecords.map(r => r['المشروع']).filter(v => v && v !== '—'))].sort();
+
+  const teamSel = document.getElementById('filterTeam');
+  const curTeam = teamSel.value;
+  teamSel.innerHTML = '<option value="">— كل المجموعات —</option>' +
+    teams.map(t => `<option value="${t}" ${t===curTeam?'selected':''}>${t}</option>`).join('');
+
+  const projSel = document.getElementById('filterProject');
+  const curProj = projSel.value;
+  projSel.innerHTML = '<option value="">— كل المشاريع —</option>' +
+    projects.map(p => `<option value="${p}" ${p===curProj?'selected':''}>${p}</option>`).join('');
+}
+
+function getFiltered() {
+  const date = document.getElementById('filterDate').value;
+  const team = document.getElementById('filterTeam').value;
+  const proj = document.getElementById('filterProject').value;
+  return allRecords.filter(r => {
+    if (date && r._dateNorm !== date) return false;
+    if (team && r['المجموعة'] !== team) return false;
+    if (proj && r['المشروع'] !== proj) return false;
+    return true;
+  });
+}
+
+function renderTable() {
+  const filtered = getFiltered();
+  document.getElementById('filterCount').textContent = filtered.length + ' سجل';
+  const tbody = document.getElementById('tableBody');
+  if (filtered.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="6">
+      <div class="empty-state">
+        <div class="empty-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
+        <div class="empty-title">لا توجد سجلات</div>
+        <div class="empty-sub">جرب تغيير الفلاتر أو ابعت رسائل في الجروب بالصيغة الصح</div>
+      </div></td></tr>`;
+    return;
+  }
+  tbody.innerHTML = filtered.map(r => `
+    <tr>
+      <td><span class="badge badge-day">${r['اليوم'] || '—'}</span></td>
+      <td class="date-cell">${r['التاريخ'] || '—'}</td>
+      <td><span class="badge badge-team">${r['المجموعة'] || '—'}</span></td>
+      <td class="project-cell">${r['المشروع'] || '—'}</td>
+      <td><span class="count-badge">${r['عدد الأفراد'] || '—'}</span></td>
+      <td class="engineer-cell">${r['مهندس الموقع'] || '—'}</td>
+    </tr>`).join('');
+}
+
+function updateStats() {
+  const todayNorm = new Date().toISOString().slice(0,10);
+  const todayRecs = allRecords.filter(r => r._dateNorm === todayNorm);
+  const totalPersonnel = allRecords.reduce((s, r) => s + (parseInt(r['عدد الأفراد']) || 0), 0);
+  const projects = new Set(allRecords.map(r => r['المشروع']).filter(v => v && v !== '—'));
+  document.getElementById('statToday').textContent = todayRecs.length;
+  document.getElementById('statPersonnel').textContent = totalPersonnel;
+  document.getElementById('statProjects').textContent = projects.size;
+  document.getElementById('statTotal').textContent = allRecords.length;
+}
+
+// ── Realtime listener من Firestore ──
+setStatus('loading', 'جاري الاتصال...');
+onSnapshot(collection(db, "haraka"), (snapshot) => {
+  allRecords = snapshot.docs.map(doc => {
+    const d = doc.data();
+    d._dateNorm = normalizeDate(d['التاريخ']);
+    return d;
+  });
+  updateFilters();
+  renderTable();
+  updateStats();
+  setStatus('ok', `متصل — ${allRecords.length} سجل`);
+  document.getElementById('lastUpdate').textContent = 'آخر تحديث: ' + new Date().toLocaleTimeString('ar-EG');
+}, (err) => {
+  setStatus('err', 'خطأ في الاتصال بـ Firebase');
+  console.error(err);
+});
+
+// filters
+document.getElementById('filterDate').addEventListener('change', renderTable);
+document.getElementById('filterTeam').addEventListener('change', renderTable);
+document.getElementById('filterProject').addEventListener('change', renderTable);
+
+window.clearFilters = function() {
+  document.getElementById('filterDate').value = '';
+  document.getElementById('filterTeam').value = '';
+  document.getElementById('filterProject').value = '';
+  renderTable();
+};
+
+window.fetchNow = function() {};
+</script>
+</body>
+</html>
